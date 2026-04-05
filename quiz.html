@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Online Quiz</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2 id="question">Loading...</h2>
+    <div id="options"></div>
+    <button id="nextBtn" style="display:none;">Next</button>
+</div>
+
+<script>
+let questions = [];
+let current = 0;
+let score = 0;
+let selected = null;
+
+const qBox = document.getElementById("question");
+const optBox = document.getElementById("options");
+const nextBtn = document.getElementById("nextBtn");
+
+fetch("php/get_questions.php")
+.then(res => res.json())
+.then(data => {
+    questions = data;
+    loadQuestion();
+});
+
+function loadQuestion(){
+    if(current >= questions.length){
+        qBox.innerHTML = "Quiz Completed 🎉<br>Your Score: "+score+" / "+questions.length;
+        optBox.innerHTML = "";
+        nextBtn.style.display = "none";
+        return;
+    }
+
+    selected = null;
+    nextBtn.style.display = "none";
+
+    const q = questions[current];
+    qBox.innerText = q.question;
+    optBox.innerHTML = "";
+
+    q.options.forEach((opt, index)=>{
+        const btn = document.createElement("button");
+        btn.innerText = opt;
+        btn.className = "optionBtn";
+
+        btn.onclick = ()=>{
+            selected = index;
+            document.querySelectorAll(".optionBtn")
+                .forEach(b=>b.classList.remove("selected"));
+
+            btn.classList.add("selected");
+            nextBtn.style.display = "block";
+        };
+
+        optBox.appendChild(btn);
+    });
+}
+
+nextBtn.onclick = ()=>{
+    if(selected === null){
+        alert("Select an option");
+        return;
+    }
+
+    if(selected === questions[current].correct){
+        score++;
+    }
+
+    current++;
+    loadQuestion();
+};
+</script>
+
+</body>
+</html>

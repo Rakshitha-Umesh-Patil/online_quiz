@@ -1,0 +1,64 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:'Segoe UI',sans-serif;
+}
+
+body{
+    min-height:100vh;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    background:linear-gradient(135deg,#667eea,#764ba2);
+}
+
+/* COMMON CONTAINER FOR ALL PAGES */
+.container{
+    width:380px;
+    padding:35px;
+    border-radius:18px;
+    background:rgba(255,255,255,0.15);
+    backdrop-filter:blur(15px);
+    box-shadow:0 8px 32px rgba(0,0,0,0.2);
+    text-align:center;
+    color:white;
+}
+
+h2{margin-bottom:20px}
+
+input,button{
+    width:100%;
+    padding:12px;
+    margin:10px 0;
+    border:none;
+    border-radius:8px;
+}
+
+button{
+    background:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.link{
+    margin-top:10px;
+    cursor:pointer;
+    text-decoration:underline;
+}
+
+/* OPTIONS */
+.optionBtn{
+    display:block;
+    width:100%;
+    margin:8px 0;
+    padding:12px;
+    border:none;
+    border-radius:8px;
+    background:white;
+    cursor:pointer;
+}
+
+.selected{
+    background:#ffd369;
+}

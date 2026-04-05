@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Leaderboard</title>
+    <link rel="stylesheet" href="css/board.css">
+</head>
+<body>
+
+<div class="board">
+    <h1>🏆 Leaderboard</h1>
+    <table id="table">
+        <tr>
+            <th>Rank</th>
+            <th>Username</th>
+            <th>Score</th>
+        </tr>
+    </table>
+
+    <div class="actions">
+        <a href="home.html">Home</a>
+        <a href="quiz.html">Play Quiz</a>
+    </div>
+</div>
+
+<script>
+fetch("php/get_scores.php")
+.then(res=>res.json())
+.then(data=>{
+    let table = document.getElementById("table");
+    data.forEach((row,i)=>{
+        table.innerHTML += `
+            <tr>
+                <td>${i+1}</td>
+                <td>${row.username}</td>
+                <td>${row.score}</td>
+            </tr>
+        `;
+    });
+});
+</script>
+
+</body>
+</html>

@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Login / Register</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="box">
+    <h2>Login</h2>
+
+    <!-- LOGIN FORM -->
+    <form id="loginForm">
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Login</button>
+    </form>
+
+    <p class="link" id="toRegister">New user? Register</p>
+
+    <!-- REGISTER FORM -->
+    <form id="registerForm" style="display:none;">
+        <input type="text" name="username" placeholder="Username" required>
+        <input type="email" name="email" placeholder="Email" required>
+        <input type="password" name="password" placeholder="Password" required>
+        <button type="submit">Register</button>
+    </form>
+
+    <p class="link" id="toLogin" style="display:none;">Already user? Login</p>
+</div>
+
+<!-- JS at the END (important) -->
+<script>
+document.addEventListener('DOMContentLoaded', function () {
+
+    const loginForm = document.getElementById('loginForm');
+    const registerForm = document.getElementById('registerForm');
+    const toRegister = document.getElementById('toRegister');
+    const toLogin = document.getElementById('toLogin');
+
+    // SWITCH FORMS
+    toRegister.onclick = function () {
+        loginForm.style.display = 'none';
+        registerForm.style.display = 'block';
+        toRegister.style.display = 'none';
+        toLogin.style.display = 'block';
+    };
+
+    toLogin.onclick = function () {
+        loginForm.style.display = 'block';
+        registerForm.style.display = 'none';
+        toRegister.style.display = 'block';
+        toLogin.style.display = 'none';
+    };
+
+    // LOGIN
+    loginForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        fetch('php/login.php', {
+            method: 'POST',
+            body: new FormData(loginForm)
+        })
+        .then(res => res.text())
+        .then(data => {
+            if (data.trim() === 'success') {
+                window.location.href = 'quiz.html';
+            } else {
+                alert(data);
+            }
+        })
+        .catch(() => alert('Login error. Check PHP server.'));
+    });
+
+    // REGISTER
+    registerForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+
+        fetch('php/register.php', {
+            method: 'POST',
+            body: new FormData(registerForm)
+        })
+        .then(res => res.text())
+        .then(data => {
+            alert(data);
+            toLogin.click(); // go back to login
+        })
+        .catch(() => alert('Register error. Check PHP server.'));
+    });
+
+});
+</script>
+
+</body>
+</html>
