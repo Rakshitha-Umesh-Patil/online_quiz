@@ -1,6 +1,8 @@
 <?php
-include 'connect.php';
+require __DIR__ . '/../vendor/autoload.php';
 
+$client = new MongoDB\Client("mongodb://127.0.0.1:27017");
+$db = $client->online_quiz_db;
 $collection = $db->scores;
 
 $cursor = $collection->find([], [

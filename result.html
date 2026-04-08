@@ -1,15 +1,25 @@
 <!DOCTYPE html>
 <html>
 <head>
-<link rel="stylesheet" href="css/style.css">
+    <title>Quiz Result</title>
+    <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
+
 <div class="container">
-<h2>Result</h2>
-<script>
-let p=new URLSearchParams(window.location.search);
-document.write("<h3>Your Score: "+p.get("score")+"</h3>");
-</script>
+    <h2>Quiz Completed 🎉</h2>
+    <h3 id="scoreText"></h3>
+
+    <button onclick="location.href='quiz.html'">Take Quiz Again</button>
+    <button onclick="location.href='leaderboard.html'">Leaderboard</button>
+    <button onclick="location.href='home.html'">Home</button>
 </div>
+
+<script>
+let p = new URLSearchParams(window.location.search);
+let score = p.get("score");
+document.getElementById("scoreText").innerText = "Your Score: " + score;
+</script>
+
 </body>
 </html>

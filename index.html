@@ -1,14 +1,14 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <title>Login / Register</title>
-    <link rel="stylesheet" href="css/style.css">
+<meta charset="UTF-8">
+<title>Login / Register</title>
+<link rel="stylesheet" href="css/style.css">
 </head>
 <body>
 
 <div class="box">
-    <h2>Login</h2>
+    <h2 id="formTitle">Login</h2>
 
     <!-- LOGIN FORM -->
     <form id="loginForm">
@@ -30,7 +30,6 @@
     <p class="link" id="toLogin" style="display:none;">Already user? Login</p>
 </div>
 
-<!-- JS at the END (important) -->
 <script>
 document.addEventListener('DOMContentLoaded', function () {
 
@@ -38,21 +37,39 @@ document.addEventListener('DOMContentLoaded', function () {
     const registerForm = document.getElementById('registerForm');
     const toRegister = document.getElementById('toRegister');
     const toLogin = document.getElementById('toLogin');
+    const formTitle = document.getElementById('formTitle');
 
-    // SWITCH FORMS
-    toRegister.onclick = function () {
+    // Toggle Forms
+    toRegister.onclick = () => {
         loginForm.style.display = 'none';
         registerForm.style.display = 'block';
         toRegister.style.display = 'none';
         toLogin.style.display = 'block';
+        formTitle.innerText = "Register";
     };
 
-    toLogin.onclick = function () {
+    toLogin.onclick = () => {
         loginForm.style.display = 'block';
         registerForm.style.display = 'none';
         toRegister.style.display = 'block';
         toLogin.style.display = 'none';
+        formTitle.innerText = "Login";
     };
+
+    // REGISTER
+    registerForm.addEventListener('submit', function(e){
+        e.preventDefault();
+
+        fetch('php/register.php', {
+            method: 'POST',
+            body: new FormData(registerForm)
+        })
+        .then(res => res.text())
+        .then(msg => {
+            alert(msg);
+            toLogin.click();   // back to login
+        });
+    });
 
     // LOGIN
     loginForm.addEventListener('submit', function (e) {
@@ -65,28 +82,15 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(res => res.text())
         .then(data => {
             if (data.trim() === 'success') {
+
+                const email = loginForm.email.value;
+                localStorage.setItem('username', email);
+
                 window.location.href = 'quiz.html';
             } else {
                 alert(data);
             }
-        })
-        .catch(() => alert('Login error. Check PHP server.'));
-    });
-
-    // REGISTER
-    registerForm.addEventListener('submit', function (e) {
-        e.preventDefault();
-
-        fetch('php/register.php', {
-            method: 'POST',
-            body: new FormData(registerForm)
-        })
-        .then(res => res.text())
-        .then(data => {
-            alert(data);
-            toLogin.click(); // go back to login
-        })
-        .catch(() => alert('Register error. Check PHP server.'));
+        });
     });
 
 });
