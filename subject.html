@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Select Subject</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<div class="container">
+    <h2>Select Quiz Subject</h2>
+
+    <button onclick="startQuiz('Web')">Web</button>
+    <button onclick="startQuiz('DBMS')">DBMS</button>
+    <button onclick="startQuiz('Python')">Python</button>
+    <button onclick="startQuiz('Java')">Java</button>
+    <button onclick="startQuiz('Aptitude')">Aptitude</button>
+</div>
+
+<script>
+function startQuiz(subject){
+    localStorage.setItem("subject", subject);
+    window.location.href = "quiz.html";
+}
+</script>
+
+</body>
+</html>

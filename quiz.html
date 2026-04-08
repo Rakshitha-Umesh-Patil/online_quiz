@@ -22,17 +22,30 @@ const qBox = document.getElementById("question");
 const optBox = document.getElementById("options");
 const nextBtn = document.getElementById("nextBtn");
 
-// ✅ Check login session
+// ✅ Check login
 const username = localStorage.getItem("username");
-if(!username){
+if (!username) {
     alert("Please login first");
     window.location.href = "index.html";
+    throw new Error("No user session");
 }
 
-// ✅ Load questions from PHP
-fetch("php/get_questions.php")
+// ✅ Check subject
+const subject = localStorage.getItem("subject");
+if (!subject) {
+    alert("Please select a subject");
+    window.location.href = "subject.html";
+    throw new Error("No subject selected");
+}
+
+// ✅ Load subject-wise questions
+fetch("php/get_questions.php?subject=" + encodeURIComponent(subject))
 .then(res => res.json())
 .then(data => {
+    if (!Array.isArray(data) || data.length === 0) {
+        qBox.innerText = "No questions found for this subject.";
+        return;
+    }
     questions = data;
     loadQuestion();
 })
@@ -40,9 +53,9 @@ fetch("php/get_questions.php")
     qBox.innerText = "Failed to load questions.";
 });
 
-// ✅ Load question
-function loadQuestion(){
-    if(current >= questions.length){
+// ✅ Load a question
+function loadQuestion() {
+    if (current >= questions.length) {
         finishQuiz();
         return;
     }
@@ -54,16 +67,15 @@ function loadQuestion(){
     qBox.innerText = q.question;
     optBox.innerHTML = "";
 
-    q.options.forEach((opt, index)=>{
+    q.options.forEach((opt, index) => {
         const btn = document.createElement("button");
         btn.innerText = opt;
         btn.className = "optionBtn";
 
-        btn.onclick = ()=>{
+        btn.onclick = () => {
             selected = index;
             document.querySelectorAll(".optionBtn")
                 .forEach(b => b.classList.remove("selected"));
-
             btn.classList.add("selected");
             nextBtn.style.display = "block";
         };
@@ -72,14 +84,14 @@ function loadQuestion(){
     });
 }
 
-// ✅ Next button
-nextBtn.onclick = ()=>{
-    if(selected === null){
+// ✅ Next
+nextBtn.onclick = () => {
+    if (selected === null) {
         alert("Please select an option");
         return;
     }
 
-    if(selected === questions[current].correct){
+    if (selected === questions[current].correct) {
         score++;
     }
 
@@ -87,20 +99,21 @@ nextBtn.onclick = ()=>{
     loadQuestion();
 };
 
-// ✅ Finish quiz → save score → go to result.html
-function finishQuiz(){
+// ✅ Finish → save score → go to result
+function finishQuiz() {
 
-    fetch('php/submit_score.php', {
-        method: 'POST',
+    fetch("php/submit_score.php", {
+        method: "POST",
         headers: {
-            'Content-Type': 'application/x-www-form-urlencoded'
+            "Content-Type": "application/x-www-form-urlencoded"
         },
-        body: `username=${encodeURIComponent(username)}&score=${score}`
+        body: `username=${encodeURIComponent(username)}&score=${score}&subject=${encodeURIComponent(subject)}`
     })
     .then(res => res.text())
-    .then(response => {
-        console.log(response); // should print "success"
-        window.location.href = "result.html?score=" + score;
+    .then(() => {
+        const total = questions.length;
+        window.location.href =
+            `result.html?score=${score}&total=${total}&subject=${encodeURIComponent(subject)}`;
     })
     .catch(() => {
         alert("Error saving score.");

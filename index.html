@@ -67,11 +67,11 @@ document.addEventListener('DOMContentLoaded', function () {
         .then(res => res.text())
         .then(msg => {
             alert(msg);
-            toLogin.click();   // back to login
+            toLogin.click();
         });
     });
 
-    // LOGIN
+    // LOGIN  ✅ IMPORTANT FIX
     loginForm.addEventListener('submit', function (e) {
         e.preventDefault();
 
@@ -79,16 +79,18 @@ document.addEventListener('DOMContentLoaded', function () {
             method: 'POST',
             body: new FormData(loginForm)
         })
-        .then(res => res.text())
+        .then(res => res.json())   // ⚠️ expect JSON now
         .then(data => {
-            if (data.trim() === 'success') {
+            if (data.status === 'success') {
 
-                const email = loginForm.email.value;
-                localStorage.setItem('username', email);
+                // ✅ store REAL username from DB
+                localStorage.setItem('username', data.username);
 
-                window.location.href = 'quiz.html';
+                localStorage.removeItem('subject');
+                window.location.href = 'subject.html';
+
             } else {
-                alert(data);
+                alert(data.message);
             }
         });
     });

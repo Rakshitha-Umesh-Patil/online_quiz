@@ -5,32 +5,24 @@ header('Content-Type: application/json');
 
 require __DIR__ . '/../vendor/autoload.php';
 
-try {
-    // Connect to MongoDB
-    $client = new MongoDB\Client("mongodb://127.0.0.1:27017");
+$client = new MongoDB\Client("mongodb://127.0.0.1:27017");
+$collection = $client->online_quiz_db->questions;
 
-    // DB and Collection
-    $collection = $client->online_quiz_db->questions;
+$subject = $_GET['subject'] ?? '';
 
-    // Fetch all questions
-    $cursor = $collection->find([]);
+$cursor = $collection->find([
+    "subject" => $subject
+]);
 
-    $questions = [];
+$questions = [];
 
-    foreach ($cursor as $doc) {
-        $questions[] = [
-            "question" => $doc["question"] ?? "",
-            "options"  => $doc["options"] ?? [],
-            "correct"  => $doc["correct"] ?? 0
-        ];
-    }
-
-    echo json_encode($questions);
-
-} catch (Exception $e) {
-    echo json_encode([
-        "status" => "error",
-        "message" => $e->getMessage()
-    ]);
+foreach ($cursor as $doc) {
+    $questions[] = [
+        "question" => $doc["question"],
+        "options"  => $doc["options"],
+        "correct"  => $doc["correct"]
+    ];
 }
+
+echo json_encode($questions);
 ?>
